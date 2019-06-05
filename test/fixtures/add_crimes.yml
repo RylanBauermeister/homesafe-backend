@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  caseId: 1
+  calltype: MyString
+  callcategory: MyString
+  addressblock: MyString
+  x: 1
+  'y': 1
+
+two:
+  caseId: 1
+  calltype: MyString
+  callcategory: MyString
+  addressblock: MyString
+  x: 1
+  'y': 1
