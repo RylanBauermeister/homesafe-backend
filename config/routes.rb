@@ -3,7 +3,7 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
       resources :crimes, only: [:index]
-
+      post 'my_profile', to: 'users#my_profile'
     end
   end
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_06_03_205301) do
+ActiveRecord::Schema.define(version: 2019_06_07_182306) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -22,6 +22,17 @@ ActiveRecord::Schema.define(version: 2019_06_03_205301) do
     t.string "addressblock"
     t.integer "x"
     t.integer "y"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.float "lat"
+    t.float "lon"
+    t.string "category"
+  end
+
+  create_table "users", force: :cascade do |t|
+    t.string "username"
+    t.string "foreign_id"
+    t.json "crime_weights"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

@@ -1,4 +1,5 @@
 class Crime < ApplicationRecord
+
   def self.getMostRecent
 
     crimes = {}
@@ -22,46 +23,60 @@ class Crime < ApplicationRecord
     crimes[:miscCrimes] = JSON.parse(miscCrimes)["features"]
 
     Crime.generateCrimes(crimes)
-    Crime.all
+    Crime.categorized_all
 
   end
 
   def self.generateCrimes(data)
-    results = []
     data.each do |type, crimes|
       crimes.each do |crime|
         crime = crime["attributes"]
-        results << Crime.find_or_create_by({
+        address = self.formatAddress(crime['addressblock'])
+        Crime.find_or_create_by({
+            category: type.to_s,
             caseId: crime['caseID'],
             calltype: crime['calltype'],
             callcategory: crime['callcategory'],
-            addressblock: self.formatAddress(crime['addressblock']),
+            addressblock: address,
             x: crime['X'],
             y: crime['Y']
-          })
+          }) do |crime|
+            coordinates = self.coordsFromAddress(address)
+            crime.lat = coordinates["lat"]
+            crime.lon = coordinates["lng"]
+          end
       end
     end
   end
 
+  def self.categorized_all
+    {
+      crimesAgainstPersons: Crime.all.where("category LIKE ?", "%crimesAgainstPersons%"),
+      propertyCrime: Crime.all.where("category LIKE ?", "%propertyCrime%"),
+      drugsAndVice: Crime.all.where("category LIKE ?", "%drugsAndVice%"),
+      crisisAndInjury: Crime.all.where("category LIKE ?", "%crisisAndInjury%"),
+      trafficCrime: Crime.all.where("category LIKE ?", "%trafficCrime%"),
+      miscCrimes: Crime.all.where("category LIKE ?", "%miscCrimes%"),
+      uncategorized: Crime.all.where(category: "")
+    }
+  end
+
+  private
+  def self.coordsFromAddress(address)
+    data = HTTParty.get("https://maps.googleapis.com/maps/api/geocode/json?address=#{self.urlify(address)}&key=#{Rails.application.credentials.dig(:google)[:maps_api_key]}")
+    data["results"] ? data["results"][0]["geometry"]["location"] : {}
+  end
+
+  def self.urlify(address)
+    address.gsub(" ", "+")+"+seattle,+WA"
+  end
+
   def self.formatAddress(address)
-    xs = address.match(/^(\d+)(X+)/)
-    if xs
-      zeroes = self.numZeroes(xs[2].length)
-      return address.sub('XX', '15')
-    end
-    address
+    return address.sub('XX', '15')
   end
 
   def self.clear
     Crime.all.delete_all
   end
 
-  private
-  def self.numZeroes(num)
-    result = ""
-    num.times do
-      result = result + "0"
-    end
-    result
-  end
 end
