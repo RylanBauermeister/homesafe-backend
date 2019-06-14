@@ -10,10 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_06_07_182306) do
+ActiveRecord::Schema.define(version: 2019_06_14_173716) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "avoids", force: :cascade do |t|
+    t.float "lat"
+    t.float "lng"
+    t.string "notes"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "user_id"
+  end
 
   create_table "crimes", force: :cascade do |t|
     t.integer "caseId"
@@ -27,6 +36,15 @@ ActiveRecord::Schema.define(version: 2019_06_07_182306) do
     t.float "lat"
     t.float "lon"
     t.string "category"
+  end
+
+  create_table "reports", force: :cascade do |t|
+    t.float "lat"
+    t.float "lng"
+    t.string "notes"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "user_id"
   end
 
   create_table "users", force: :cascade do |t|

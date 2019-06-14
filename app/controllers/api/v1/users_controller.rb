@@ -1,6 +1,4 @@
 class Api::V1::UsersController < ApplicationController
-  before_action :valid_signature?
-
 
   def my_profile
     @user = User.find_or_initialize_by(user_parameters) do |user|
@@ -14,20 +12,19 @@ class Api::V1::UsersController < ApplicationController
     end
   end
 
-  private
-  def valid_signature?
-    @oauth = Koala::Facebook::OAuth.new(Rails.application.credentials.dig(:facebook)[:app_id], Rails.application.credentials.dig(:facebook)[:app_secret])
-    begin
-      @oauth.parse_signed_request(params[:signature])
-    rescue Koala::Facebook::OAuthSignatureError
-      render json: {"error": "invalid signature"}
-    rescue JSON::ParserError
-      render json: {"error": "invalid json in signature"}
+  def update
+    @user = User.find(params[:id])
+    if @user.update(user_parameters)
+      render json: @user, status: :ok
+    else
+      render json: {error: "Bad parameters"}, status: :unacceptable
     end
   end
 
+
+  private
   def user_parameters
-    params.require(:user).permit(:username, :foreign_id)
+    params.require(:user).permit(:username, :foreign_id, crime_weights:[:crimesAgainstPersons, :crisisAndInjury, :drugsAndVice, :miscCrimes, :propertyCrime, :trafficCrime])
   end
 
 
