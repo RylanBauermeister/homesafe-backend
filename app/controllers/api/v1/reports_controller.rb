@@ -23,6 +23,28 @@ class Api::V1::ReportsController < ApplicationController
     render json: Report.all, status: :accepted
   end
 
+  def like
+    @report = Report.find(params[:id])
+    @like = Like.new({report: @report, user_id: params[:user_id]})
+    if @like.save
+      render json: {likes: @report.likes}, status: :ok
+    else
+      render json: {error: "unable to like"}, status: :not_acceptable
+    end
+  end
+
+  def unlike
+    @report = Report.find(params[:id])
+    @user = User.find(params[:user_id])
+    @like = Like.find_by({user: @user, report: @report})
+    if @like.delete
+      render json: {likes: @report.likes}, status: :ok
+    else
+      render json: {error: "unable to dislike."}, status: :not_acceptable
+    end
+
+  end
+
 
   private
   def report_params

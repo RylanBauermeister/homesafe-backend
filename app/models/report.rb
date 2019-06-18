@@ -1,5 +1,7 @@
 class Report < ApplicationRecord
   belongs_to :user
+  has_many :likes
+  has_many :liking_users, through: :likes, source: "user"
 
   def self.reportFromData(report, user)
     coords = coordsFromAddress(report["address"])
