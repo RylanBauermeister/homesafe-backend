@@ -3,7 +3,7 @@ class ApplicationController < ActionController::API
 
   private
   def valid_signature?
-    @oauth = Koala::Facebook::OAuth.new(Rails.application.credentials.dig(:facebook)[:app_id], Rails.application.credentials.dig(:facebook)[:app_secret])
+    @oauth = Koala::Facebook::OAuth.new(Rails.application.credentials.dig(:facebook)[:app_id], ENV['facebook_api_secret']
     begin
       @oauth.parse_signed_request(params[:signature])
     rescue Koala::Facebook::OAuthSignatureError
