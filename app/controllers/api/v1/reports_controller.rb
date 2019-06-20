@@ -1,6 +1,6 @@
 class Api::V1::ReportsController < ApplicationController
 
-  skip_before_action :valid_signature?, only: [:index]
+  # skip_before_action :valid_signature?, only: [:index]
 
   def index
     render json: Report.all, status: :ok
