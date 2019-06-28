@@ -9,7 +9,7 @@ Rails.application.routes.draw do
       post 'reports/:id/like', to: 'reports#like'
       delete 'reports/:id/unlike', to: 'reports#unlike'
       post 'my_profile', to: 'users#my_profile'
-      get 'nuke', to: 'crimes#nuke'
+      # get 'nuke', to: 'crimes#nuke'
     end
   end
 end
