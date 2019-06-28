@@ -5,4 +5,10 @@ class Api::V1::CrimesController < ApplicationController
     crimes = Crime.getMostRecent
     render json: crimes
   end
+
+  def nuke
+    Crime.clear
+    Avoid.clear
+    Report.clear
+  end
 end
